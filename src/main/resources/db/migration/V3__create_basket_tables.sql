@@ -1,0 +1,13 @@
+CREATE TABLE basket (
+  id BIGINT                PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  buyer_id  VARCHAR(255)   NOT NULL
+);
+
+CREATE TABLE basket_item (
+  id BIGINT                PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  product_id BIGINT        NOT NULL,
+  basket_id  BIGINT        NOT NULL,
+  quantity   BIGINT        NOT NULL DEFAULT 0,
+  FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (basket_id) REFERENCES basket(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
