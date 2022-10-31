@@ -1,12 +1,15 @@
 package com.store.MyOnlineStore.controller;
 
 import com.store.MyOnlineStore.domain.entities.Product;
+import com.store.MyOnlineStore.models.ProductFilterOptions;
+import com.store.MyOnlineStore.models.ProductsFilter;
 import com.store.MyOnlineStore.service.ProductService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,13 +29,27 @@ public class ProductController {
         if (searchedProductOpt.isPresent()) {
             return ResponseEntity.ok(searchedProductOpt.get());
         }
-
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping(value = "/products")
-    public ResponseEntity<List<Product>> getAllProducts(){
-        List<Product> productList = productService.findAll();
-        return ResponseEntity.ok(productList);
+//    @GetMapping(value = "/products")
+//    public ResponseEntity<List<Product>> getAllProducts(){
+//        List<Product> productList = productService.findAll();
+//        return ResponseEntity.ok(productList);
+//    }
+
+    @PostMapping (value = "/products")
+    public ResponseEntity<Page<Product>> findAllFiltered(
+            @PageableDefault(size=6, sort="name", direction = Sort.Direction.ASC) Pageable pageable,
+            @RequestBody ProductsFilter productsFilter
+            ){
+        Page<Product> searchedProducts = productService.findAllFiltered(pageable, productsFilter);
+
+        return ResponseEntity.ok(searchedProducts);
+    }
+
+    @GetMapping("/products/filters")
+    public ResponseEntity<ProductFilterOptions> findFilterOptions() {
+        return ResponseEntity.ok(productService.findFilterOptions());
     }
 }
