@@ -10,8 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Optional;
 
 @RestController //nu returneaza resurse statice, doar date sub forma de Json;
@@ -26,10 +24,7 @@ public class ProductController {
     @GetMapping(value = "/product/{id}") //rezultatul + un status de http
     public ResponseEntity<Product> findById(@PathVariable("id") long id){
         Optional<Product> searchedProductOpt = productService.findById(id); //wrapper peste rezultat care permite sun rezultat fara check-uri de null
-        if (searchedProductOpt.isPresent()) {
-            return ResponseEntity.ok(searchedProductOpt.get());
-        }
-        return ResponseEntity.notFound().build();
+        return searchedProductOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 //    @GetMapping(value = "/products")
