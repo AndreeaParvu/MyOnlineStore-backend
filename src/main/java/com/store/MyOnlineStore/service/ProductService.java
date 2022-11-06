@@ -6,6 +6,7 @@ import com.store.MyOnlineStore.domain.entities.Type;
 import com.store.MyOnlineStore.domain.repository.ProductRepository;
 import com.store.MyOnlineStore.models.ProductFilterOptions;
 import com.store.MyOnlineStore.models.ProductsFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,6 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
-
     public ProductService(ProductRepository productRepository){
         this.productRepository = productRepository;
     }

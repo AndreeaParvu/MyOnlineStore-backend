@@ -74,8 +74,9 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/commerce/api/auth/**").permitAll()
-                .antMatchers("commerce/api/public/**").permitAll()
+                .authorizeRequests()
+                .antMatchers("/commerce/api/public/**").permitAll()
+                .antMatchers("/commerce/api/auth/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
