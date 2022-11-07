@@ -46,7 +46,7 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
@@ -80,11 +80,11 @@ public class AuthController {
         }
 
         //Create new user's account
-        User user = new User(signupRequest.getEmail(),
-                             passwordEncoder.encode(signupRequest.getPassword()),
-                             Collections.singleton(sentRole.get()));
+            User user = new User(signupRequest.getEmail(),
+                    passwordEncoder.encode(signupRequest.getPassword()),
+                    Collections.singleton(sentRole.get()));
 
-        userRepository.save(user);
+            userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
