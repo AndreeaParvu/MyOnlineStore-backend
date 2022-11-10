@@ -11,18 +11,22 @@ public class OrderItem {
     private ProductItemOrdered itemOrdered;
     private BigDecimal price;
     private long quantity;
-
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 
     public OrderItem() {}
 
-    public OrderItem(long id, ProductItemOrdered itemOrdered, BigDecimal price, long quantity) {
+    public OrderItem(long id,
+                     ProductItemOrdered itemOrdered,
+                     BigDecimal price,
+                     long quantity,
+                     Order order) {
         this.id = id;
         this.itemOrdered = itemOrdered;
         this.price = price;
         this.quantity = quantity;
+        this.order = order;
     }
 
     public long getId() {

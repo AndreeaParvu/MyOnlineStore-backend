@@ -1,5 +1,8 @@
 package com.store.MyOnlineStore.domain.entities;
 
+import javax.persistence.*;
+
+@Embeddable
 public class Address {
     private String fullName;
     private String address1;

@@ -1,29 +1,47 @@
 package com.store.MyOnlineStore.domain.entities.OrderAggregate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.store.MyOnlineStore.domain.entities.Address;
+import com.store.MyOnlineStore.domain.entities.User;
+
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
 @Entity
+@Table(name = "user_order")
 public class Order {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
-    private String buyerId;
-    private ShippingAddress shippingAddress;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JsonBackReference
+    private User user;
+    @Embedded
+    private Address shippingAddress;
     private Date orderDate = Date.from(Instant.now());
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
-    private long subtotal;
-    private long deliveryFee;
+    private BigDecimal subtotal;
+    private BigDecimal deliveryFee;
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.PENDING;
 
     public Order () {}
 
-    public Order(long id, String buyerId, ShippingAddress shippingAddress, Date orderDate, List<OrderItem> orderItems, long subtotal, long deliveryFee, OrderStatus orderStatus) {
+    public Order(long id,
+                 User user,
+                 Address shippingAddress,
+                 Date orderDate,
+                 List<OrderItem> orderItems,
+                 BigDecimal subtotal,
+                 BigDecimal deliveryFee,
+                 OrderStatus orderStatus) {
         this.id = id;
-        this.buyerId = buyerId;
+        this.user = user;
         this.shippingAddress = shippingAddress;
         this.orderDate = orderDate;
         this.orderItems = orderItems;
@@ -40,19 +58,19 @@ public class Order {
         this.id = id;
     }
 
-    public String getBuyerId() {
-        return buyerId;
+    public User getUser() {
+        return user;
     }
 
-    public void setBuyerId(String buyerId) {
-        this.buyerId = buyerId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public ShippingAddress getShippingAddress() {
+    public Address getShippingAddress() {
         return shippingAddress;
     }
 
-    public void setShippingAddress(ShippingAddress shippingAddress) {
+    public void setShippingAddress(Address shippingAddress) {
         this.shippingAddress = shippingAddress;
     }
 
@@ -72,19 +90,19 @@ public class Order {
         this.orderItems = orderItems;
     }
 
-    public long getSubtotal() {
+    public BigDecimal getSubtotal() {
         return subtotal;
     }
 
-    public void setSubtotal(long subtotal) {
+    public void setSubtotal(BigDecimal subtotal) {
         this.subtotal = subtotal;
     }
 
-    public long getDeliveryFee() {
+    public BigDecimal getDeliveryFee() {
         return deliveryFee;
     }
 
-    public void setDeliveryFee(long deliveryFee) {
+    public void setDeliveryFee(BigDecimal deliveryFee) {
         this.deliveryFee = deliveryFee;
     }
 
@@ -96,7 +114,9 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public long getTotal() {
-        return subtotal + deliveryFee;
+    @Transient // use of transient so hibernate will not try to match it to a column in the db
+    public BigDecimal getTotal() {
+        return subtotal.add(deliveryFee);
     }
+
 }

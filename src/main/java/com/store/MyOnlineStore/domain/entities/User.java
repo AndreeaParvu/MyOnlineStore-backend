@@ -21,6 +21,8 @@ public class User {
                 joinColumns = @JoinColumn(name = "user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+    @Embedded
+    private Address address;
 
     public User() {}
 
@@ -28,6 +30,13 @@ public class User {
         this.email = email;
         this.password = password;
         this.roles = roles;
+    }
+
+    public User(String email, String password, Set<Role> roles, Address address) {
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+        this.address = address;
     }
 
     public long getId() {
@@ -60,5 +69,13 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }
