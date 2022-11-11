@@ -1,5 +1,7 @@
 package com.store.MyOnlineStore.domain.entities.OrderAggregate;
 
+import com.store.MyOnlineStore.domain.entities.Product;
+
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -10,10 +12,10 @@ public class ProductItemOrdered {
 
     public ProductItemOrdered() {}
 
-    public ProductItemOrdered(long productId, String name, String pictureUrl) {
-        this.productId = productId;
-        this.name = name;
-        this.pictureUrl = pictureUrl;
+    public ProductItemOrdered(Product product) {
+        this.productId = product.getId();
+        this.name = product.getName();
+        this.pictureUrl = product.getPictureUrl();
     }
 
     public long getProductId() {

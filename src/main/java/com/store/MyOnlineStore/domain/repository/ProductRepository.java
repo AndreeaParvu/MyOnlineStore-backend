@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -17,4 +18,5 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
 
     @Query("select distinct product.brand from Product as product")
     Set<Brand> findDistinctProductBrands();
+    List<Product> findByIdIn(Set<Long> productIds);
 }

@@ -1,5 +1,8 @@
 package com.store.MyOnlineStore.domain.entities.OrderAggregate;
 
+import com.store.MyOnlineStore.domain.entities.BasketItem;
+import com.store.MyOnlineStore.domain.entities.Product;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 @Entity
@@ -16,6 +19,13 @@ public class OrderItem {
     private Order order;
 
     public OrderItem() {}
+
+    public OrderItem(BasketItem basketItem) {
+        Product product = basketItem.getProduct();
+        this.itemOrdered = new ProductItemOrdered(product);
+        this.price = product.getPrice();
+        this.quantity = basketItem.getQuantity();
+    }
 
     public OrderItem(long id,
                      ProductItemOrdered itemOrdered,

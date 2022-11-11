@@ -23,7 +23,9 @@ public class Order {
     @Embedded
     private Address shippingAddress;
     private Date orderDate = Date.from(Instant.now());
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    // get the order items eagerly as there are no cases where we would need the order
+    // without the items, so there is no need for an extra query each time
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderItem> orderItems;
     private BigDecimal subtotal;
     private BigDecimal deliveryFee;
@@ -32,15 +34,13 @@ public class Order {
 
     public Order () {}
 
-    public Order(long id,
-                 User user,
+    public Order(User user,
                  Address shippingAddress,
                  Date orderDate,
                  List<OrderItem> orderItems,
                  BigDecimal subtotal,
                  BigDecimal deliveryFee,
                  OrderStatus orderStatus) {
-        this.id = id;
         this.user = user;
         this.shippingAddress = shippingAddress;
         this.orderDate = orderDate;
