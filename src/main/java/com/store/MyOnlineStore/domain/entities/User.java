@@ -1,5 +1,7 @@
 package com.store.MyOnlineStore.domain.entities;
 
+import com.store.MyOnlineStore.domain.entities.OrderAggregate.Order;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +23,9 @@ public class User {
                 joinColumns = @JoinColumn(name = "user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Order> orders = new HashSet<>();
     @Embedded
     private Address address;
 
@@ -77,5 +82,13 @@ public class User {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
     }
 }

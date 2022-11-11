@@ -3,22 +3,22 @@ package com.store.MyOnlineStore.models;
 import com.store.MyOnlineStore.domain.entities.Address;
 
 public class CreateOrderRequest {
-    private boolean storeAddress;
-    private Address address;
+    private boolean saveAddress;
+    private Address shippingAddress;
 
-    public boolean isStoreAddress() {
-        return storeAddress;
+    public boolean isSaveAddress() {
+        return saveAddress;
     }
 
-    public void setStoreAddress(boolean storeAddress) {
-        this.storeAddress = storeAddress;
+    public void setSaveAddress(boolean saveAddress) {
+        this.saveAddress = saveAddress;
     }
 
-    public Address getAddress() {
-        return address;
+    public Address getShippingAddress() {
+        return shippingAddress;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setShippingAddress(Address shippingAddress) {
+        this.shippingAddress = shippingAddress;
     }
 }

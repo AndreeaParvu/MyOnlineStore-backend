@@ -6,10 +6,7 @@ import com.store.MyOnlineStore.domain.entities.OrderAggregate.OrderItem;
 import com.store.MyOnlineStore.domain.entities.OrderAggregate.OrderStatus;
 import com.store.MyOnlineStore.domain.entities.Product;
 import com.store.MyOnlineStore.domain.entities.User;
-import com.store.MyOnlineStore.domain.repository.BasketRepository;
-import com.store.MyOnlineStore.domain.repository.OrderRepository;
-import com.store.MyOnlineStore.domain.repository.ProductRepository;
-import com.store.MyOnlineStore.domain.repository.UserRepository;
+import com.store.MyOnlineStore.domain.repository.*;
 import com.store.MyOnlineStore.models.CreateOrderRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,20 +21,23 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final BasketRepository basketRepository;
+
+    private final BasketItemRepository basketItemRepository;
     private final ProductRepository productRepository;
 
     public OrderService(OrderRepository orderRepository,
                         UserRepository userRepository,
                         BasketRepository basketRepository,
-                        ProductRepository productRepository) {
+                        BasketItemRepository basketItemRepository, ProductRepository productRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.basketRepository = basketRepository;
+        this.basketItemRepository = basketItemRepository;
         this.productRepository = productRepository;
     }
     @Transactional(readOnly = true)
     public List<Order> findAllOrders(long userId) {
-        return orderRepository.finByUser_Id(userId);
+        return orderRepository.finByUserId(userId);
     }
 
     @Transactional(readOnly = true)
@@ -81,10 +81,10 @@ public class OrderService {
                                 .longValue())
                 .sum();
 
-        long deliveryFee = subtotal > 500 ? 0 : 20;
+        long deliveryFee = subtotal > 200 ? 0 : 20;
 
         Order order = new Order(currentUser,
-                createOrderRequest.getAddress(),
+                createOrderRequest.getShippingAddress(),
                 new Date(),
                 orderItems,
                 new BigDecimal(subtotal),
@@ -95,16 +95,18 @@ public class OrderService {
     }
 
     private void saveShippingAddressOnUser(User currentUser, CreateOrderRequest createOrderRequest) {
-        if (createOrderRequest.isStoreAddress()) {
+        if (createOrderRequest.isSaveAddress()) {
             currentUser.setAddress(currentUser.getAddress());
             userRepository.save(currentUser);
         }
     }
 
     private void clearBasketItems(Basket basket) {
+        basketItemRepository.deleteAll(basket.getItems());
         basket.getItems().clear();
         basket.setItems(Collections.emptySet());
         basketRepository.save(basket);
+
     }
 
     private void reserveProductQuantity(List<OrderItem> orderItems) {

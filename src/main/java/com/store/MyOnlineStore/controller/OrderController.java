@@ -12,7 +12,7 @@ import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
-@RequestMapping("commerce/api/order/")
+@RequestMapping("commerce/api/order")
 public class OrderController {
     private final OrderService orderService;
 

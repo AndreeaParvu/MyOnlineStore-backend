@@ -7,6 +7,8 @@ import com.store.MyOnlineStore.domain.entities.User;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class Order {
     // get the order items eagerly as there are no cases where we would need the order
     // without the items, so there is no need for an extra query each time
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<OrderItem> orderItems;
+    private List<OrderItem> orderItems = Collections.emptyList();
     private BigDecimal subtotal;
     private BigDecimal deliveryFee;
     @Enumerated(EnumType.STRING)
@@ -44,10 +46,11 @@ public class Order {
         this.user = user;
         this.shippingAddress = shippingAddress;
         this.orderDate = orderDate;
-        this.orderItems = orderItems;
         this.subtotal = subtotal;
         this.deliveryFee = deliveryFee;
         this.orderStatus = orderStatus;
+        this.orderItems = new ArrayList<>(orderItems.size());
+        orderItems.forEach(this::addOrderItem);
     }
 
     public long getId() {
@@ -117,6 +120,13 @@ public class Order {
     @Transient // use of transient so hibernate will not try to match it to a column in the db
     public BigDecimal getTotal() {
         return subtotal.add(deliveryFee);
+    }
+
+    public void addOrderItem(OrderItem orderItem) {
+        this.orderItems.add(orderItem);
+        if (orderItem.getOrder() != this) {
+            orderItem.setOrder(this);
+        }
     }
 
 }

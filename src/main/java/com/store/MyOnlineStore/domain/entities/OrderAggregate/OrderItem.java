@@ -1,5 +1,6 @@
 package com.store.MyOnlineStore.domain.entities.OrderAggregate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.store.MyOnlineStore.domain.entities.BasketItem;
 import com.store.MyOnlineStore.domain.entities.Product;
 
@@ -16,6 +17,7 @@ public class OrderItem {
     private long quantity;
     @ManyToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id")
+    @JsonBackReference
     private Order order;
 
     public OrderItem() {}
